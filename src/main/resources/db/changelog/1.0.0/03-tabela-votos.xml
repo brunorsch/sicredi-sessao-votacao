@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="20240207-0209" author="brunorsch">
+        <sql>
+            CREATE TYPE OPCAO AS ENUM ('SIM', 'NAO');
+        </sql>
+
+        <rollback>
+            <sql>
+                DROP TYPE OPCAO;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20240207-0210" author="brunorsch">
+        <createTable tableName="VOTO">
+            <column name="ID" type="SERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ID_PAUTA" type="INTEGER">
+                <constraints nullable="false" foreignKeyName="FK_VOTO_PAUTA" references="PAUTA(ID)"  />
+            </column>
+            <column name="ID_ASSOCIADO" type="INTEGER">
+                <constraints nullable="false" foreignKeyName="FK_VOTO_ASSOCIADO" references="ASSOCIADO(ID)" />
+            </column>
+            <column name="OPCAO" type="OPCAO">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="20240207-0257" author="brunorsch">
+        <addUniqueConstraint tableName="VOTO" columnNames="ID_PAUTA, ID_ASSOCIADO" constraintName="UK_VOTO_PAUTA_ASSOC"/>
+    </changeSet>
+
+</databaseChangeLog>
