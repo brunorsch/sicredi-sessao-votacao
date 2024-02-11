@@ -14,8 +14,8 @@ import lombok.Data;
 @Data
 public class Associado {
     @Id
-    @SequenceGenerator(name = "VOTO_ID_SEQ", sequenceName = "VOTO_ID_SEQ", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VOTO_ID_SEQ")
+    @SequenceGenerator(name = "ASSOCIADO_ID_SEQ", sequenceName = "ASSOCIADO_ID_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ASSOCIADO_ID_SEQ")
     private Long id;
 
     @Column(name = "CPF", nullable = false, unique = true, length = 11)
