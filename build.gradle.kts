@@ -23,16 +23,19 @@ repositories {
 
 dependencies {
 	val commonsLangVersion = "3.14.0"
-	val commonsRngVersion = "1.5"
 	val easyRandomVersion = "5.0.0"
+	val jsr305Version = "3.0.2"
 	val mapStructVersion = "1.5.5.Final"
+	val mapStructBindingVersion = "0.2.0"
 	val springdocVersion = "2.3.0"
 
 	annotationProcessor("org.mapstruct:mapstruct-processor:$mapStructVersion")
+	annotationProcessor("org.projectlombok:lombok-mapstruct-binding:$mapStructBindingVersion")
 	annotationProcessor("org.projectlombok:lombok")
 
 	compileOnly("org.projectlombok:lombok")
 
+	implementation("com.google.code.findbugs:jsr305:$jsr305Version")
 	implementation("org.apache.commons:commons-lang3:$commonsLangVersion")
 	implementation("org.liquibase:liquibase-core")
 	implementation("org.mapstruct:mapstruct:$mapStructVersion")
@@ -45,11 +48,16 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 
 	// Test related
+	testAnnotationProcessor("org.projectlombok:lombok")
+	testAnnotationProcessor("org.mapstruct:mapstruct-processor:$mapStructVersion")
+	testAnnotationProcessor("org.projectlombok:lombok-mapstruct-binding:$mapStructBindingVersion")
+
 	testCompileOnly("org.projectlombok:lombok")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.kafka:spring-kafka-test")
 	testImplementation("org.jeasy:easy-random-core:$easyRandomVersion")
+	testImplementation("com.h2database:h2")
 }
 
 tasks.withType<Test> {

@@ -1,7 +1,9 @@
 package io.github.brunorsch.sicredi.sessao.votacao.api.v1.controller;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
+import static org.apache.commons.lang3.RandomUtils.nextLong;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -15,9 +17,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.AbrirSessaoRequest;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.CriarPautaRequest.CriarPautaRequestBuilder;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.response.PautaResponse;
 import io.github.brunorsch.sicredi.sessao.votacao.service.CrudPautaService;
+import io.github.brunorsch.sicredi.sessao.votacao.service.SessaoVotacaoService;
 import io.github.brunorsch.sicredi.sessao.votacao.testutils.Random;
 
 @WebMvcTest(PautaController.class)
@@ -29,7 +33,16 @@ class PautaControllerTest {
     private ObjectMapper mapper;
 
     @MockBean
-    private CrudPautaService service;
+    private CrudPautaService crudService;
+
+    @MockBean
+    private SessaoVotacaoService sessaoVotacaoService;
+
+    @Test
+    void postDeveRetornarBadRequestQuandoBodyVazio() throws Exception {
+        this.mockMvc.perform(post("/v1/pautas"))
+            .andExpect(status().isBadRequest());
+    }
 
     @Test
     void postDeveRetornarBadRequestQuandoTituloForNulo() throws Exception {
@@ -104,11 +117,11 @@ class PautaControllerTest {
     }
 
     @Test
-    void postDeveRetornar201QuandoRequisicaoValidaComDescricao() throws Exception {
+    void postDeveRetornarCreatedQuandoRequisicaoValidaComDescricao() throws Exception {
         var request = Random.obj(CriarPautaRequestBuilder.class).build();
         var response = Random.obj(PautaResponse.class);
 
-        when(service.criar(request)).thenReturn(response);
+        when(crudService.criar(request)).thenReturn(response);
 
         var body = this.mockMvc.perform(post("/v1/pautas")
                 .contentType(APPLICATION_JSON)
@@ -120,13 +133,13 @@ class PautaControllerTest {
     }
 
     @Test
-    void postDeveRetornar201QuandoRequisicaoValidaSemDescricao() throws Exception {
+    void postDeveRetornarCreatedQuandoRequisicaoValidaSemDescricao() throws Exception {
         var request = Random.obj(CriarPautaRequestBuilder.class)
             .descricao(null)
             .build();
         var response = Random.obj(PautaResponse.class);
 
-        when(service.criar(request)).thenReturn(response);
+        when(crudService.criar(request)).thenReturn(response);
 
         var body = this.mockMvc.perform(post("/v1/pautas")
                 .contentType(APPLICATION_JSON)
@@ -135,5 +148,24 @@ class PautaControllerTest {
             .andReturn().getResponse().getContentAsString();
 
         assertEquals(response, mapper.readValue(body, PautaResponse.class));
+    }
+
+    @Test
+    void postVotacaoDeveRetornarBadRequestQuandoBodyVazio() throws Exception {
+        this.mockMvc.perform(post("/v1/pautas/{id}/votacao", nextLong()))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void postVotacaoDeveRetornarCreatedQuandoRequestValida() throws Exception {
+        var idPauta = nextLong();
+        var request = Random.obj(AbrirSessaoRequest.class);
+
+        this.mockMvc.perform(post("/v1/pautas/{id}/votacao", idPauta)
+                .contentType(APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)))
+            .andExpect(status().isCreated());
+
+        verify(sessaoVotacaoService).abrir(idPauta, request.getDataHoraFimVotacao());
     }
 }
