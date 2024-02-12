@@ -22,15 +22,34 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.liquibase:liquibase-core")
-	implementation("org.springframework.kafka:spring-kafka")
-	compileOnly("org.projectlombok:lombok")
-	runtimeOnly("org.postgresql:postgresql")
+	val commonsLangVersion = "3.14.0"
+	val commonsRngVersion = "1.5"
+	val easyRandomVersion = "5.0.0"
+	val mapStructVersion = "1.5.5.Final"
+	val springdocVersion = "2.3.0"
+
+	annotationProcessor("org.mapstruct:mapstruct-processor:$mapStructVersion")
 	annotationProcessor("org.projectlombok:lombok")
+
+	compileOnly("org.projectlombok:lombok")
+
+	implementation("org.apache.commons:commons-lang3:$commonsLangVersion")
+	implementation("org.liquibase:liquibase-core")
+	implementation("org.mapstruct:mapstruct:$mapStructVersion")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.kafka:spring-kafka")
+
+	runtimeOnly("org.postgresql:postgresql")
+
+	// Test related
+	testCompileOnly("org.projectlombok:lombok")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.kafka:spring-kafka-test")
+	testImplementation("org.jeasy:easy-random-core:$easyRandomVersion")
 }
 
 tasks.withType<Test> {

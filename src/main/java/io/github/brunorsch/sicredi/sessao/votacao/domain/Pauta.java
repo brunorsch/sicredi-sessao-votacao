@@ -28,5 +28,5 @@ public class Pauta {
     private String descricao;
 
     @Column(name = "DT_FIM_VOTACAO")
-    private LocalDateTime dataFimVotacao;
+    private LocalDateTime dataHoraFimVotacao;
 }

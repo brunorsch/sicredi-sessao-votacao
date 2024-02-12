@@ -9,3 +9,5 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     change-log: classpath:db/changelog/changelog-master.xml
+  messages:
+    basename: i18n/messages
