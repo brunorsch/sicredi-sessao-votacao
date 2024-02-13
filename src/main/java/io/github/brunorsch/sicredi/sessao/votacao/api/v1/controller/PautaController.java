@@ -33,7 +33,7 @@ public class PautaController implements PautaApi {
     }
 
     @Override
-    @PostMapping("/{id}/votacao")
+    @PostMapping("/{id}/sessao-votacao")
     @ResponseStatus(CREATED)
     public void postVotacao(@PathVariable final Long id, @RequestBody final AbrirSessaoRequest request) {
         sessaoVotacaoService.abrir(id, request.getDataHoraFimVotacao());
