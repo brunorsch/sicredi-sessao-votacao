@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Voto;
 
 public interface VotoRepository extends JpaRepository<Voto, Long> {
+    boolean existsByAssociadoIdAndPautaId(final Long idAssociado, final Long idPauta);
 }

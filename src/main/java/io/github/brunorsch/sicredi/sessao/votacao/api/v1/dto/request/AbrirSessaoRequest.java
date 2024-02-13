@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class AbrirSessaoRequest {
     @Schema(
         description = "Data e hora do fechamento da sessão. " +

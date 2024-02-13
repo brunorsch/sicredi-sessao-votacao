@@ -8,9 +8,7 @@ import org.springframework.web.context.annotation.ApplicationScope;
 @SpringBootTest
 @ActiveProfiles("test")
 class SicrediSessaoVotacaoApplicationTests {
-
 	@Test
 	void contextLoads() {
 	}
-
 }

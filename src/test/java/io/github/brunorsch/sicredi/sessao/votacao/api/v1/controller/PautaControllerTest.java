@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.AbrirSessaoRequest;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.CriarPautaRequest.CriarPautaRequestBuilder;
+import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.VotoRequest;
+import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.VotoRequest.VotoRequestBuilder;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.response.PautaResponse;
 import io.github.brunorsch.sicredi.sessao.votacao.service.CrudPautaService;
 import io.github.brunorsch.sicredi.sessao.votacao.service.SessaoVotacaoService;
@@ -167,5 +169,48 @@ class PautaControllerTest {
             .andExpect(status().isCreated());
 
         verify(sessaoVotacaoService).abrir(idPauta, request.getDataHoraFimVotacao());
+    }
+
+    @Test
+    void postVotoDeveRetornarBadRequestQuandoBodyVazio() throws Exception {
+        this.mockMvc.perform(post("/v1/pautas/{id}/voto", nextLong()))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void postVotoDeveRetornarBadRequestQuandoIdAssociadoForNulo() throws Exception {
+        var request = Random.obj(VotoRequestBuilder.class)
+            .idAssociado(null)
+            .build();
+
+        this.mockMvc.perform(post("/v1/pautas/{id}/voto", nextLong())
+                .contentType(APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void postVotoDeveRetornarBadRequestQuandoOpcaoForNula() throws Exception {
+        var request = Random.obj(VotoRequestBuilder.class)
+            .opcao(null)
+            .build();
+
+        this.mockMvc.perform(post("/v1/pautas/{id}/voto", nextLong())
+                .contentType(APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void postVotoDeveRetornarCreatedQuandoRequestValida() throws Exception {
+        var idPauta = nextLong();
+        var request = Random.obj(VotoRequest.class);
+
+        this.mockMvc.perform(post("/v1/pautas/{id}/voto", idPauta)
+                .contentType(APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)))
+            .andExpect(status().isCreated());
+
+        verify(sessaoVotacaoService).registrarVoto(idPauta, request);
     }
 }

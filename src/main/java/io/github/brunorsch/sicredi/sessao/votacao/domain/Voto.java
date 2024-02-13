@@ -11,10 +11,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.servlet.annotation.HttpConstraint;
+import lombok.Data;
 
 @Entity
 @Table(name = "VOTO")
+@Data
 public class Voto {
     @Id
     @SequenceGenerator(name = "VOTO_ID_SEQ", sequenceName = "VOTO_ID_SEQ", allocationSize = 1)
