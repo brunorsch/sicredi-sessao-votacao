@@ -276,6 +276,6 @@ class SessaoVotacaoServiceTest {
     @Builder
     private static class ApuracaoProjectionImpl implements ApuracaoProjection {
         private Opcao opcao;
-        private Long total;
+        private long total;
     }
 }
