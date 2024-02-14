@@ -8,6 +8,7 @@ import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.CadastrarAs
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.response.AssociadoResponse;
 import io.github.brunorsch.sicredi.sessao.votacao.data.repository.AssociadoRepository;
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Associado;
+import io.github.brunorsch.sicredi.sessao.votacao.exception.AssociadoJaCadastradoException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.AssociadoNaoEncontradoException;
 import io.github.brunorsch.sicredi.sessao.votacao.mapper.AssociadoMapper;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,11 @@ public class CrudAssociadoService {
 
     public AssociadoResponse cadastrar(final CadastrarAssociadoRequest request) {
         log.info("Cadastrando associado: {}", mascararCpf(request.getCpf()));
+
+        if (associadoRepository.existsByCpf(request.getCpf())) {
+            log.warn("Associado já cadastrado");
+            throw new AssociadoJaCadastradoException();
+        }
 
         final Associado associado = new Associado();
         associado.setCpf(request.getCpf());

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum CodigoErro {
     APURACAO_JA_REALIZADA(UNPROCESSABLE_ENTITY, "erros.processar-votos.apuracao-ja-realizada"),
+    ASSOCIADO_JA_CADASTRADO(UNPROCESSABLE_ENTITY, "erros.cadastrar-associado.associado-ja-cadastrado"),
     ASSOCIADO_NAO_ENCONTRADO(UNPROCESSABLE_ENTITY, "erros.associado-nao-encontrado"),
     DATA_HORA_DEVE_SER_FUTURO(BAD_REQUEST, "erros.data-hora-deve-ser-futuro"),
     PAUTA_JA_POSSUI_SESSAO(UNPROCESSABLE_ENTITY, "erros.abrir-sessao.pauta-ja-possui-sessao"),

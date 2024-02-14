@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.CadastrarAssociadoRequest;
 import io.github.brunorsch.sicredi.sessao.votacao.data.repository.AssociadoRepository;
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Associado;
+import io.github.brunorsch.sicredi.sessao.votacao.exception.AssociadoJaCadastradoException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.AssociadoNaoEncontradoException;
 import io.github.brunorsch.sicredi.sessao.votacao.mapper.AssociadoMapper;
 import io.github.brunorsch.sicredi.sessao.votacao.mapper.AssociadoMapperImpl;
@@ -52,6 +53,15 @@ class CrudAssociadoServiceTest {
         final var resultado = service.buscar(nextLong());
 
         assertEquals(associado, resultado);
+    }
+
+    @Test
+    void cadastrarDeveLancarAssociadoJaCadastradoExceptionQuandoAssociadoJaExistir() {
+        final var request = Random.obj(CadastrarAssociadoRequest.class);
+        when(repository.existsByCpf(request.getCpf()))
+            .thenReturn(true);
+
+        assertThrows(AssociadoJaCadastradoException.class, () -> service.cadastrar(request));
     }
 
     @Test
