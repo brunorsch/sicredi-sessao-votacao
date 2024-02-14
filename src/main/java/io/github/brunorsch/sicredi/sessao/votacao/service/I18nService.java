@@ -1,4 +1,4 @@
-package io.github.brunorsch.sicredi.sessao.votacao.support;
+package io.github.brunorsch.sicredi.sessao.votacao.service;
 
 import java.util.Locale;
 

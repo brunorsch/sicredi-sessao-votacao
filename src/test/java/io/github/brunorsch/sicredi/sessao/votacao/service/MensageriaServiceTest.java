@@ -1,4 +1,4 @@
-package io.github.brunorsch.sicredi.sessao.votacao.messaging;
+package io.github.brunorsch.sicredi.sessao.votacao.service;
 
 import static io.github.brunorsch.sicredi.sessao.votacao.messaging.Topicos.RESULTADO_VOTACAO;
 import static org.mockito.Mockito.verify;

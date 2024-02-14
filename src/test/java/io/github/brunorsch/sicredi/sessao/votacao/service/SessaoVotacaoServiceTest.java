@@ -41,7 +41,6 @@ import io.github.brunorsch.sicredi.sessao.votacao.exception.SessaoAindaEmAndamen
 import io.github.brunorsch.sicredi.sessao.votacao.exception.SessaoJaEncerradaException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.SessaoNaoAbertaException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.VotoJaRealizadoException;
-import io.github.brunorsch.sicredi.sessao.votacao.messaging.MensageriaService;
 import io.github.brunorsch.sicredi.sessao.votacao.messaging.payload.ResultadoVotacaoPayload;
 import io.github.brunorsch.sicredi.sessao.votacao.testutils.Random;
 import lombok.Builder;
