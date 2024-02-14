@@ -63,7 +63,7 @@ public class SessaoVotacaoService {
 
     private void validarDataHoraInformadaAbertura(
         final LocalDateTime dataHoraInformada, final LocalDateTime dataHoraAtual) {
-        if (nonNull(dataHoraInformada) && !dataHoraAtual.isBefore(dataHoraInformada)) {
+        if (nonNull(dataHoraInformada) && dataHoraAtual.isAfter(dataHoraInformada)) {
             throw new DataHoraDeveSerFuturoException();
         }
     }
