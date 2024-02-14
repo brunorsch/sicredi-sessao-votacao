@@ -35,7 +35,7 @@ public interface PautaApi {
             content = @Content(schema = @Schema(implementation = ErroResponse.class)))
     })
     void postVotacao(
-        @Parameter(name = "ID da Pauta", example = "1") Long id,
+        @Parameter(description = "ID da Pauta") Long id,
         @RequestBody AbrirSessaoRequest request);
 
     @Operation(summary = "Registrar novo voto")
@@ -53,6 +53,6 @@ public interface PautaApi {
             content = @Content(schema = @Schema(implementation = ErroResponse.class)))
     })
     void postVoto(
-        @Parameter(name = "ID da Pauta", example = "1") Long id,
+        @Parameter(description = "ID da Pauta") Long id,
         @RequestBody VotoRequest request);
 }
