@@ -1,5 +1,8 @@
 package io.github.brunorsch.sicredi.sessao.votacao.domain;
 
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -33,5 +36,6 @@ public class Voto {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "OPCAO", nullable = false)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private Opcao opcao;
 }
