@@ -15,7 +15,10 @@ A documentação da API pode ser acessada em [http://localhost:8080/swagger-ui/i
 
 ## Deploy
 Este repositório contém um arquivo `docker-compose.yml` que pode ser utilizado 
-para executar a aplicação na máquina local usando o comando `docker-compose up`.
+para executar a aplicação na máquina local usando o comando.
+```shell
+docker-compose up -d
+```
 
 Uma imagem Docker da versão mais recente da aplicação foi disponibilizada no Docker Hub,
 para evitar a necessidade de build manual.
