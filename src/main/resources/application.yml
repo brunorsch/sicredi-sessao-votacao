@@ -1,5 +1,5 @@
 app:
-  intervalo-job-minutos: ${INTERVALO_JOB_MINUTOS:5}
+  intervalo-job-minutos: ${INTERVALO_JOB_MINUTOS:1}
 
 spring:
   datasource:

@@ -17,7 +17,7 @@ public class ApuracaoVotosJob {
     private final PautaRepository pautaRepository;
     private final SessaoVotacaoService sessaoVotacaoService;
 
-    @Scheduled(fixedRate = 1, timeUnit = MINUTES)
+    @Scheduled(fixedRateString = "${app.intervalo-job-minutos}", timeUnit = MINUTES)
     public void job() {
         log.debug("Iniciando job para apuração de votos");
 
