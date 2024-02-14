@@ -39,6 +39,7 @@ dependencies {
 	implementation("org.apache.commons:commons-lang3:$commonsLangVersion")
 	implementation("org.liquibase:liquibase-core")
 	implementation("org.mapstruct:mapstruct:$mapStructVersion")
+	implementation("org.springdoc:springdoc-openapi-starter-common:$springdocVersion")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")

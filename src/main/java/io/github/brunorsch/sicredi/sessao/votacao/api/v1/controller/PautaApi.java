@@ -1,5 +1,6 @@
 package io.github.brunorsch.sicredi.sessao.votacao.api.v1.controller;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -63,5 +64,5 @@ public interface PautaApi {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Pautas listadas com sucesso")
     })
-    Page<PautaResponse> get(Pageable pageable);
+    Page<PautaResponse> get(@ParameterObject Pageable pageable);
 }
