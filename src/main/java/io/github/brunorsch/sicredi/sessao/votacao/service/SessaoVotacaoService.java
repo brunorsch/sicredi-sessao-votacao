@@ -16,7 +16,6 @@ import io.github.brunorsch.sicredi.sessao.votacao.data.repository.PautaRepositor
 import io.github.brunorsch.sicredi.sessao.votacao.data.repository.VotoRepository;
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Opcao;
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Pauta;
-import io.github.brunorsch.sicredi.sessao.votacao.domain.ResultadoVotacao;
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Voto;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.ApuracaoJaRealizadaException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.DataHoraDeveSerFuturoException;
@@ -25,6 +24,8 @@ import io.github.brunorsch.sicredi.sessao.votacao.exception.SessaoAindaEmAndamen
 import io.github.brunorsch.sicredi.sessao.votacao.exception.SessaoJaEncerradaException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.SessaoNaoAbertaException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.VotoJaRealizadoException;
+import io.github.brunorsch.sicredi.sessao.votacao.messaging.MensageriaService;
+import io.github.brunorsch.sicredi.sessao.votacao.messaging.payload.ResultadoVotacaoPayload;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,7 @@ public class SessaoVotacaoService {
     private final Clock clock;
     private final PautaRepository pautaRepository;
     private final VotoRepository votoRepository;
+    private final MensageriaService mensageriaService;
 
     public void abrir(final Long idPauta, final LocalDateTime dataHoraFimVotacao) {
         log.info("Abrindo sessão de votação da pauta ID: {}", idPauta);
@@ -107,7 +109,7 @@ public class SessaoVotacaoService {
     }
 
     @Transactional
-    public ResultadoVotacao apurarResultados(final Pauta pauta) {
+    public void apurarResultados(final Pauta pauta) {
         log.info("Apurando resultados da pauta ID {}", pauta.getId());
 
         validarEstadoPautaParaApuracao(pauta);
@@ -116,16 +118,16 @@ public class SessaoVotacaoService {
             .stream()
             .collect(Collectors.toMap(ApuracaoProjection::getOpcao, ApuracaoProjection::getTotal));
 
-        final var resultadoVotacao = ResultadoVotacao.builder()
+        pauta.setVotacaoApurada(true);
+        pautaRepository.save(pauta);
+
+        final var eventoResultado = ResultadoVotacaoPayload.builder()
             .idPauta(pauta.getId())
             .votosSim(votosPorOpcao.get(Opcao.SIM))
             .votosNao(votosPorOpcao.get(Opcao.NAO))
             .build();
 
-        pauta.setVotacaoApurada(true);
-        pautaRepository.save(pauta);
-
-        return resultadoVotacao;
+        mensageriaService.publicarEventoResultadoVotacao(eventoResultado);
     }
 
     private void validarEstadoPautaParaApuracao(final Pauta pauta) {

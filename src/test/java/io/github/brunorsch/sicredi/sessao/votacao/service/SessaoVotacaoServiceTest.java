@@ -32,7 +32,6 @@ import io.github.brunorsch.sicredi.sessao.votacao.data.repository.VotoRepository
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Associado;
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Opcao;
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Pauta;
-import io.github.brunorsch.sicredi.sessao.votacao.domain.ResultadoVotacao;
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Voto;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.ApuracaoJaRealizadaException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.DataHoraDeveSerFuturoException;
@@ -42,6 +41,8 @@ import io.github.brunorsch.sicredi.sessao.votacao.exception.SessaoAindaEmAndamen
 import io.github.brunorsch.sicredi.sessao.votacao.exception.SessaoJaEncerradaException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.SessaoNaoAbertaException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.VotoJaRealizadoException;
+import io.github.brunorsch.sicredi.sessao.votacao.messaging.MensageriaService;
+import io.github.brunorsch.sicredi.sessao.votacao.messaging.payload.ResultadoVotacaoPayload;
 import io.github.brunorsch.sicredi.sessao.votacao.testutils.Random;
 import lombok.Builder;
 import lombok.Data;
@@ -62,6 +63,9 @@ class SessaoVotacaoServiceTest {
 
     @Mock
     private VotoRepository votoRepository;
+
+    @Mock
+    private MensageriaService mensageriaService;
 
     @Spy
     private Clock clock = Clock.fixed(Instant.parse("2024-02-12T12:00:00Z"), ZoneId.systemDefault());
@@ -234,6 +238,7 @@ class SessaoVotacaoServiceTest {
         @Test
         void deveApurarResultadosCorretamente() {
             final var pautaCaptor = ArgumentCaptor.forClass(Pauta.class);
+            final var resultadoCaptor = ArgumentCaptor.forClass(ResultadoVotacaoPayload.class);
             final ApuracaoProjectionImpl projectionSim = ApuracaoProjectionImpl.builder()
                 .opcao(SIM)
                 .total(nextLong(0, 10000))
@@ -246,12 +251,14 @@ class SessaoVotacaoServiceTest {
             when(votoRepository.contarVotosPorIdPauta(pauta.getId()))
                 .thenReturn(List.of(projectionSim, projectionNao));
 
-            final ResultadoVotacao resultadoVotacao = service.apurarResultados(pauta);
+            service.apurarResultados(pauta);
 
             verify(pautaRepository).save(pautaCaptor.capture());
+            verify(mensageriaService).publicarEventoResultadoVotacao(resultadoCaptor.capture());
+            final var resultadoVotacao = resultadoCaptor.getValue();
             final var pautaSalva = pautaCaptor.getValue();
 
-            assertTrue(pauta.isVotacaoApurada());
+            assertTrue(pautaSalva.isVotacaoApurada());
             assertEquals(projectionSim.getTotal(), resultadoVotacao.getVotosSim());
             assertEquals(projectionNao.getTotal(), resultadoVotacao.getVotosNao());
         }
