@@ -11,12 +11,12 @@ import lombok.Data;
 @Builder
 public class CriarPautaRequest {
     @Schema(description = "Título da pauta", example = "Pauta de teste")
-    @NotBlank(message = "{erros.criar-pauta.titulo-obrigatorio}")
-    @Size(max = 64, message = "{erros.criar-pauta.titulo-tamanho-maximo}")
+    @NotBlank(message = "erros.criar-pauta.titulo-obrigatorio")
+    @Size(max = 64, message = "erros.criar-pauta.titulo-tamanho-maximo")
     private String titulo;
 
     @Schema(description = "Descrição da pauta", example = "Descrição da pauta de teste", nullable = true)
-    @NuloOuNotBlank(message = "{erros.criar-pauta.descricao-nao-pode-ser-vazia}")
-    @Size(max = 2000, message = "{erros.criar-pauta.descricao-tamanho-maximo}")
+    @NuloOuNotBlank(message = "erros.criar-pauta.descricao-nao-pode-ser-vazia")
+    @Size(max = 2000, message = "erros.criar-pauta.descricao-tamanho-maximo")
     private String descricao;
 }

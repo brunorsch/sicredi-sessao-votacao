@@ -11,7 +11,7 @@ import lombok.Data;
 @Builder
 public class CadastrarAssociadoRequest {
     @Schema(description = "CPF do associado")
-    @NotNull(message = "{erros.cpf-invalido}")
-    @CPF(message = "{erros.cpf-invalido}")
+    @NotNull(message = "erros.cpf-invalido")
+    @CPF(message = "erros.cpf-invalido")
     private String cpf;
 }

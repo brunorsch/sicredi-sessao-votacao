@@ -10,17 +10,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.github.brunorsch.sicredi.sessao.votacao.api.v1.ErrorMapperAdvice;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.CadastrarAssociadoRequest.CadastrarAssociadoRequestBuilder;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.response.AssociadoResponse;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.response.AssociadoResponse.AssociadoResponseBuilder;
 import io.github.brunorsch.sicredi.sessao.votacao.service.CrudAssociadoService;
+import io.github.brunorsch.sicredi.sessao.votacao.service.I18nService;
 import io.github.brunorsch.sicredi.sessao.votacao.testutils.Random;
 
 @WebMvcTest(AssociadoController.class)
+@Import({ErrorMapperAdvice.class, I18nService.class})
 class AssociadoControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -32,7 +36,7 @@ class AssociadoControllerTest {
     private CrudAssociadoService crudService;
 
     @Test
-    void postDeveRetornarBadRequestQuandoCpfNaoInformado() throws Exception {
+    void postDeveRetornarBadRequestQuandoBodyNaoInformado() throws Exception {
         this.mockMvc.perform(post("/v1/associados"))
             .andExpect(status().isBadRequest());
     }

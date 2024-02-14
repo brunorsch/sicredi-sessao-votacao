@@ -10,10 +10,10 @@ import lombok.Data;
 @Builder
 public class VotoRequest {
     @Schema(description = "ID do associado", example = "1")
-    @NotNull(message = "{erros.id-associado-invalido}")
+    @NotNull(message = "erros.id-associado-invalido")
     private Long idAssociado;
 
-    @Schema(description = "Opção do voto", example = "S")
-    @NotNull(message = "{erros.registrar-voto.opcao-obrigatoria}")
+    @Schema(description = "Opção do voto", example = "SIM")
+    @NotNull(message = "erros.registrar-voto.opcao-obrigatoria")
     private Opcao opcao;
 }

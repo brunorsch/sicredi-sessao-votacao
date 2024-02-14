@@ -2,7 +2,6 @@ package io.github.brunorsch.sicredi.sessao.votacao.api.v1.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +15,7 @@ import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.VotoRequest
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.response.PautaResponse;
 import io.github.brunorsch.sicredi.sessao.votacao.service.CrudPautaService;
 import io.github.brunorsch.sicredi.sessao.votacao.service.SessaoVotacaoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,21 +28,21 @@ public class PautaController implements PautaApi {
     @Override
     @PostMapping
     @ResponseStatus(CREATED)
-    public PautaResponse post(@Validated @RequestBody final CriarPautaRequest request) {
+    public PautaResponse post(@Valid @RequestBody final CriarPautaRequest request) {
         return crudService.criar(request);
     }
 
     @Override
     @PostMapping("/{id}/sessao-votacao")
     @ResponseStatus(CREATED)
-    public void postVotacao(@PathVariable final Long id, @RequestBody final AbrirSessaoRequest request) {
+    public void postVotacao(@PathVariable final Long id, @Valid @RequestBody final AbrirSessaoRequest request) {
         sessaoVotacaoService.abrir(id, request.getDataHoraFimVotacao());
     }
 
     @Override
     @PostMapping("/{id}/voto")
     @ResponseStatus(CREATED)
-    public void postVoto(@PathVariable final Long id, @Validated @RequestBody final VotoRequest request) {
+    public void postVoto(@PathVariable final Long id, @Valid @RequestBody final VotoRequest request) {
         sessaoVotacaoService.registrarVoto(id, request);
     }
 }

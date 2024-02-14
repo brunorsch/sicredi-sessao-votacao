@@ -13,20 +13,24 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.github.brunorsch.sicredi.sessao.votacao.api.v1.ErrorMapperAdvice;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.AbrirSessaoRequest;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.CriarPautaRequest.CriarPautaRequestBuilder;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.VotoRequest;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.VotoRequest.VotoRequestBuilder;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.response.PautaResponse;
 import io.github.brunorsch.sicredi.sessao.votacao.service.CrudPautaService;
+import io.github.brunorsch.sicredi.sessao.votacao.service.I18nService;
 import io.github.brunorsch.sicredi.sessao.votacao.service.SessaoVotacaoService;
 import io.github.brunorsch.sicredi.sessao.votacao.testutils.Random;
 
 @WebMvcTest(PautaController.class)
+@Import({ErrorMapperAdvice.class, I18nService.class})
 class PautaControllerTest {
     @Autowired
     private MockMvc mockMvc;
