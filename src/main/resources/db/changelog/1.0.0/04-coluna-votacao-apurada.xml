@@ -6,9 +6,11 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
         http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-
-    <include file="01-tabela-pautas.xml" relativeToChangelogFile="true" />
-    <include file="02-tabela-associado.xml" relativeToChangelogFile="true" />
-    <include file="03-tabela-votos.xml" relativeToChangelogFile="true" />
-    <include file="04-coluna-votacao-apurada.xml" relativeToChangelogFile="true" />
+    <changeSet id="20240214-0000" author="brunorsch">
+        <addColumn tableName="PAUTA">
+            <column name="VOTACAO_APURADA" type="BOOLEAN" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

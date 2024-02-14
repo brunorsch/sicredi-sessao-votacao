@@ -1,26 +1,31 @@
 package io.github.brunorsch.sicredi.sessao.votacao.service;
 
-import static io.github.brunorsch.sicredi.sessao.votacao.utils.LocalDateTimeUtils.isFuturoOuPresente;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNullElse;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.VotoRequest;
+import io.github.brunorsch.sicredi.sessao.votacao.data.projection.ApuracaoProjection;
+import io.github.brunorsch.sicredi.sessao.votacao.data.repository.PautaRepository;
+import io.github.brunorsch.sicredi.sessao.votacao.data.repository.VotoRepository;
+import io.github.brunorsch.sicredi.sessao.votacao.domain.Opcao;
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Pauta;
+import io.github.brunorsch.sicredi.sessao.votacao.domain.ResultadoVotacao;
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Voto;
+import io.github.brunorsch.sicredi.sessao.votacao.exception.ApuracaoJaRealizadaException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.DataHoraDeveSerFuturoException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.PautaJaPossuiSessaoException;
-import io.github.brunorsch.sicredi.sessao.votacao.exception.PautaNaoEncontradaException;
+import io.github.brunorsch.sicredi.sessao.votacao.exception.SessaoAindaEmAndamentoException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.SessaoJaEncerradaException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.SessaoNaoAbertaException;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.VotoJaRealizadoException;
-import io.github.brunorsch.sicredi.sessao.votacao.repository.PautaRepository;
-import io.github.brunorsch.sicredi.sessao.votacao.repository.VotoRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SessaoVotacaoService {
     private final CrudAssociadoService crudAssociadoService;
+    private final CrudPautaService crudPautaService;
     private final Clock clock;
     private final PautaRepository pautaRepository;
     private final VotoRepository votoRepository;
@@ -43,10 +49,9 @@ public class SessaoVotacaoService {
 
         final var dataHoraEfetiva = requireNonNullElse(dataHoraFimVotacao, dataHoraAtual.plusMinutes(1L));
 
-        final var pauta = pautaRepository.findById(idPauta)
-            .orElseThrow(PautaNaoEncontradaException::new);
+        final var pauta = crudPautaService.buscar(idPauta);
 
-        if(nonNull(pauta.getDataHoraFimVotacao())) {
+        if (pauta.isSessaoIniciada()) {
             throw new PautaJaPossuiSessaoException();
         }
 
@@ -57,7 +62,7 @@ public class SessaoVotacaoService {
 
     private void validarDataHoraInformadaAbertura(
         final LocalDateTime dataHoraInformada, final LocalDateTime dataHoraAtual) {
-        if(nonNull(dataHoraInformada) && !dataHoraAtual.isBefore(dataHoraInformada)) {
+        if (nonNull(dataHoraInformada) && !dataHoraAtual.isBefore(dataHoraInformada)) {
             throw new DataHoraDeveSerFuturoException();
         }
     }
@@ -66,10 +71,9 @@ public class SessaoVotacaoService {
         log.info("Registrando voto do associado ID {} na pauta ID {}", request.getIdAssociado(), idPauta);
         log.debug("Opção do voto: {}", request.getOpcao());
 
-        final var pauta = pautaRepository.findById(idPauta)
-            .orElseThrow(PautaNaoEncontradaException::new);
+        final var pauta = crudPautaService.buscar(idPauta);
 
-        validarEstadoSessao(pauta);
+        validarEstadoPautaParaVoto(pauta);
         validarVotoJaRealizado(idPauta, request.getIdAssociado());
 
         final var associado = crudAssociadoService.buscar(request.getIdAssociado());
@@ -82,23 +86,62 @@ public class SessaoVotacaoService {
         votoRepository.save(voto);
     }
 
-    private void validarEstadoSessao(final Pauta pauta) {
+    private void validarEstadoPautaParaVoto(final Pauta pauta) {
         final var dataHoraAtual = LocalDateTime.now(clock);
-        if(isNull(pauta.getDataHoraFimVotacao())) {
+        if (!pauta.isSessaoIniciada()) {
             log.warn("Sessão de votação não está aberta");
             throw new SessaoNaoAbertaException();
         }
 
-        if(!isFuturoOuPresente(dataHoraAtual, pauta.getDataHoraFimVotacao())) {
+        if (!pauta.isSessaoEmAndamento(dataHoraAtual)) {
             log.warn("Sessão de votação já foi encerrada");
             throw new SessaoJaEncerradaException();
         }
     }
 
     private void validarVotoJaRealizado(final Long idPauta, final Long idAssociado) {
-        if(votoRepository.existsByAssociadoIdAndPautaId(idAssociado, idPauta)) {
+        if (votoRepository.existsByAssociadoIdAndPautaId(idAssociado, idPauta)) {
             log.warn("Associado já votou nesta pauta");
             throw new VotoJaRealizadoException();
+        }
+    }
+
+    @Transactional
+    public ResultadoVotacao apurarResultados(final Pauta pauta) {
+        log.info("Apurando resultados da pauta ID {}", pauta.getId());
+
+        validarEstadoPautaParaApuracao(pauta);
+
+        final Map<Opcao, Long> votosPorOpcao = votoRepository.contarVotosPorIdPauta(pauta.getId())
+            .stream()
+            .collect(Collectors.toMap(ApuracaoProjection::getOpcao, ApuracaoProjection::getTotal));
+
+        final var resultadoVotacao = ResultadoVotacao.builder()
+            .idPauta(pauta.getId())
+            .votosSim(votosPorOpcao.get(Opcao.SIM))
+            .votosNao(votosPorOpcao.get(Opcao.NAO))
+            .build();
+
+        pauta.setVotacaoApurada(true);
+        pautaRepository.save(pauta);
+
+        return resultadoVotacao;
+    }
+
+    private void validarEstadoPautaParaApuracao(final Pauta pauta) {
+        if(!pauta.isSessaoIniciada()) {
+            log.warn("Sessão de votação não foi aberta");
+            throw new SessaoNaoAbertaException();
+        }
+
+        if (pauta.isSessaoEmAndamento(LocalDateTime.now(clock))) {
+            log.warn("Votação ainda está em andamento");
+            throw new SessaoAindaEmAndamentoException();
+        }
+
+        if (pauta.isVotacaoApurada()) {
+            log.debug("Votação já foi apurada");
+            throw new ApuracaoJaRealizadaException();
         }
     }
 }

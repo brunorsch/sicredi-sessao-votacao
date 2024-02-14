@@ -13,7 +13,7 @@ class LocalDateTimeUtilsTest {
         var dataInicial = LocalDateTime.now();
         var dataFinal = LocalDateTime.now().plusMinutes(1);
 
-        var resultado = LocalDateTimeUtils.isFuturoOuPresente(dataInicial, dataFinal);
+        var resultado = LocalDateTimeUtils.isAntesOuIgual(dataInicial, dataFinal);
 
         assertTrue(resultado);
     }
@@ -22,7 +22,7 @@ class LocalDateTimeUtilsTest {
     void isFuturoOuPresenteDeveRetornarTrueQuandoDataForIgualAAtual() {
         var dataInicial = LocalDateTime.now();
 
-        var resultado = LocalDateTimeUtils.isFuturoOuPresente(dataInicial, dataInicial);
+        var resultado = LocalDateTimeUtils.isAntesOuIgual(dataInicial, dataInicial);
 
         assertTrue(resultado);
     }
@@ -32,15 +32,8 @@ class LocalDateTimeUtilsTest {
         var dataInicial = LocalDateTime.now();
         var dataFinal = LocalDateTime.now().minusMinutes(1);
 
-        var resultado = LocalDateTimeUtils.isFuturoOuPresente(dataInicial, dataFinal);
+        var resultado = LocalDateTimeUtils.isAntesOuIgual(dataInicial, dataFinal);
 
         assertFalse(resultado);
-    }
-
-    @Test
-    void isFuturoOuPresenteDeveRetornarFalseQuandoAlgumParametroForNulo() {
-        assertFalse(LocalDateTimeUtils.isFuturoOuPresente(null, null));
-        assertFalse(LocalDateTimeUtils.isFuturoOuPresente(null, LocalDateTime.now()));
-        assertFalse(LocalDateTimeUtils.isFuturoOuPresente(LocalDateTime.now(), null));
     }
 }

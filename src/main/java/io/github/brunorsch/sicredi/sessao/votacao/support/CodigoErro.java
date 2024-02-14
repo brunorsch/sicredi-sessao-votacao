@@ -13,11 +13,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum CodigoErro {
+    APURACAO_JA_REALIZADA(UNPROCESSABLE_ENTITY, "erros.processar-votos.apuracao-ja-realizada"),
     ASSOCIADO_NAO_ENCONTRADO(UNPROCESSABLE_ENTITY, "erros.registrar-voto.associado-nao-encontrado"),
     DATA_HORA_DEVE_SER_FUTURO(BAD_REQUEST, "erros.data-hora-deve-ser-futuro"),
     PAUTA_JA_POSSUI_SESSAO(UNPROCESSABLE_ENTITY, "erros.abrir-sessao.pauta-ja-possui-sessao"),
     PAUTA_NAO_ENCONTRADA(NOT_FOUND, "erros.pauta-nao-encontrada"),
-    SESSAO_JA_ENCERRADA(UNPROCESSABLE_ENTITY, "erros.abrir-sessao.sessao-ja-encerrada"),
+    SESSAO_JA_ENCERRADA(UNPROCESSABLE_ENTITY, "erros.registrar-voto.sessao-ja-encerrada"),
+    SESSAO_AINDA_EM_ANDAMENTO(UNPROCESSABLE_ENTITY, "erros.processar-votos.sessao-ainda-em-andamento"),
     SESSAO_NAO_ABERTA(PRECONDITION_FAILED, "erros.registrar-voto.sessao-nao-aberta"),
     VOTO_JA_REALIZADO(UNPROCESSABLE_ENTITY, "erros.registrar-voto.voto-ja-realizado");
 

@@ -1,5 +1,8 @@
 package io.github.brunorsch.sicredi.sessao.votacao.domain;
 
+import static io.github.brunorsch.sicredi.sessao.votacao.utils.LocalDateTimeUtils.isAntesOuIgual;
+import static java.util.Objects.nonNull;
+
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -29,4 +32,15 @@ public class Pauta {
 
     @Column(name = "DT_FIM_VOTACAO")
     private LocalDateTime dataHoraFimVotacao;
+
+    @Column(name = "VOTACAO_APURADA", nullable = false)
+    private boolean votacaoApurada;
+
+    public boolean isSessaoIniciada() {
+        return nonNull(this.dataHoraFimVotacao);
+    }
+
+    public boolean isSessaoEmAndamento(final LocalDateTime dataHoraAtual) {
+        return isSessaoIniciada() && isAntesOuIgual(dataHoraAtual, this.dataHoraFimVotacao);
+    }
 }

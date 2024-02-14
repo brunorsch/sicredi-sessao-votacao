@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.CadastrarAssociadoRequest;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.response.AssociadoResponse;
+import io.github.brunorsch.sicredi.sessao.votacao.data.repository.AssociadoRepository;
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Associado;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.AssociadoNaoEncontradoException;
 import io.github.brunorsch.sicredi.sessao.votacao.mapper.AssociadoMapper;
-import io.github.brunorsch.sicredi.sessao.votacao.repository.AssociadoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +21,8 @@ public class CrudAssociadoService {
     private final AssociadoMapper mapper;
 
     public Associado buscar(final Long id) {
+        log.debug("Buscando associado com ID: {}", id);
+
         return associadoRepository.findById(id)
             .orElseThrow(AssociadoNaoEncontradoException::new);
     }

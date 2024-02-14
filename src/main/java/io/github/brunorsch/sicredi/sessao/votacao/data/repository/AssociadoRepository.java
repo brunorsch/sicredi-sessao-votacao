@@ -1,4 +1,4 @@
-package io.github.brunorsch.sicredi.sessao.votacao.repository;
+package io.github.brunorsch.sicredi.sessao.votacao.data.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

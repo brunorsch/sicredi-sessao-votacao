@@ -17,11 +17,11 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.CadastrarAssociadoRequest;
+import io.github.brunorsch.sicredi.sessao.votacao.data.repository.AssociadoRepository;
 import io.github.brunorsch.sicredi.sessao.votacao.domain.Associado;
 import io.github.brunorsch.sicredi.sessao.votacao.exception.AssociadoNaoEncontradoException;
 import io.github.brunorsch.sicredi.sessao.votacao.mapper.AssociadoMapper;
 import io.github.brunorsch.sicredi.sessao.votacao.mapper.AssociadoMapperImpl;
-import io.github.brunorsch.sicredi.sessao.votacao.repository.AssociadoRepository;
 import io.github.brunorsch.sicredi.sessao.votacao.testutils.Random;
 
 @ExtendWith(MockitoExtension.class)
