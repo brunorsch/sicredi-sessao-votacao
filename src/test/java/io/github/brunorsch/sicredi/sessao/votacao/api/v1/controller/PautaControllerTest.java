@@ -3,17 +3,22 @@ package io.github.brunorsch.sicredi.sessao.votacao.api.v1.controller;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.RandomUtils.nextLong;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -216,5 +221,16 @@ class PautaControllerTest {
             .andExpect(status().isCreated());
 
         verify(sessaoVotacaoService).registrarVoto(idPauta, request);
+    }
+
+    @Test
+    void getDeveRetornarOkQuandoRequestValida() throws Exception {
+        var page = new PageImpl<>(List.of(Random.obj(PautaResponse.class), Random.obj(PautaResponse.class)));
+
+        when(crudService.listar(any()))
+            .thenReturn(page);
+
+        this.mockMvc.perform(get("/v1/pautas"))
+            .andExpect(status().isOk());
     }
 }

@@ -1,5 +1,8 @@
 package io.github.brunorsch.sicredi.sessao.votacao.api.v1.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.AbrirSessaoRequest;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.CriarPautaRequest;
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.VotoRequest;
@@ -55,4 +58,10 @@ public interface PautaApi {
     void postVoto(
         @Parameter(description = "ID da Pauta") Long id,
         @RequestBody VotoRequest request);
+
+    @Operation(summary = "Listar pautas")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Pautas listadas com sucesso")
+    })
+    Page<PautaResponse> get(Pageable pageable);
 }

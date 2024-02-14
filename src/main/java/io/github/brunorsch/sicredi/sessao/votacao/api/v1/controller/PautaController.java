@@ -1,7 +1,12 @@
 package io.github.brunorsch.sicredi.sessao.votacao.api.v1.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,5 +49,12 @@ public class PautaController implements PautaApi {
     @ResponseStatus(CREATED)
     public void postVoto(@PathVariable("id") final Long id, @Valid @RequestBody final VotoRequest request) {
         sessaoVotacaoService.registrarVoto(id, request);
+    }
+
+    @Override
+    @GetMapping
+    @ResponseStatus(OK)
+    public Page<PautaResponse> get(@PageableDefault final Pageable pageable) {
+        return crudService.listar(pageable);
     }
 }

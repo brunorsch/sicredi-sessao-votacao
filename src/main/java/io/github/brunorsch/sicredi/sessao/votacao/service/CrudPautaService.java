@@ -1,5 +1,7 @@
 package io.github.brunorsch.sicredi.sessao.votacao.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.CriarPautaRequest;
@@ -17,6 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 public class CrudPautaService {
     private final PautaMapper mapper;
     private final PautaRepository repository;
+
+    public Page<PautaResponse> listar(Pageable pageable) {
+        log.info("Listando pautas: {}", pageable);
+
+        return repository.findAll(pageable)
+            .map(mapper::toPautaResponse);
+    }
 
     public Pauta buscar(final Long id) {
         log.debug("Buscando pauta com ID: {}", id);

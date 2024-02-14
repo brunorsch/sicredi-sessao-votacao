@@ -4,8 +4,10 @@ import static java.util.Optional.empty;
 import static org.apache.commons.lang3.RandomUtils.nextLong;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.CriarPautaRequest;
 import io.github.brunorsch.sicredi.sessao.votacao.data.repository.PautaRepository;
@@ -33,6 +37,20 @@ class CrudPautaServiceTest {
 
     @Spy
     private PautaMapper mapper = new PautaMapperImpl();
+
+    @Test
+    void listarDeveRetornarPautasCorretamente() {
+        final var pageable = mock(Pageable.class);
+        final var pautas = new PageImpl<>(List.of(Random.obj(Pauta.class), Random.obj(Pauta.class)));
+        final var pautasEsperadas = pautas.map(mapper::toPautaResponse);
+
+        when(repository.findAll(pageable))
+            .thenReturn(pautas);
+
+        final var resultado = service.listar(pageable);
+
+        assertEquals(pautasEsperadas, resultado);
+    }
 
     @Test
     void buscarDeveLancarExceptionQuandoPautaNaoExistir() {
