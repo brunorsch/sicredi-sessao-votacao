@@ -40,7 +40,7 @@ class SessaoVotacaoServiceTest {
     private SessaoVotacaoService service;
 
     @Mock
-    private AssociadoService associadoService;
+    private CrudAssociadoService crudAssociadoService;
 
     @Mock
     private PautaRepository pautaRepository;
@@ -55,7 +55,7 @@ class SessaoVotacaoServiceTest {
     @BeforeEach
     void setUp() {
         clock = Clock.fixed(Instant.parse("2024-02-12T12:00:00Z"), ZoneId.systemDefault());
-        service = new SessaoVotacaoService(associadoService, clock, pautaRepository, votoRepository);
+        service = new SessaoVotacaoService(crudAssociadoService, clock, pautaRepository, votoRepository);
         idPauta = nextLong();
         dataHoraFimVotacao = LocalDateTime.now(clock).plusMinutes(10L);
     }
@@ -179,7 +179,7 @@ class SessaoVotacaoServiceTest {
             var votoRequest = Random.obj(VotoRequest.class);
             var associado = Random.obj(Associado.class);
             associado.setId(votoRequest.getIdAssociado());
-            when(associadoService.buscar(votoRequest.getIdAssociado()))
+            when(crudAssociadoService.buscar(votoRequest.getIdAssociado()))
                 .thenReturn(associado);
 
             service.registrarVoto(idPauta, votoRequest);

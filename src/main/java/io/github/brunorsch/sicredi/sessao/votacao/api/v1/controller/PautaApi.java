@@ -36,7 +36,9 @@ public interface PautaApi {
         @ApiResponse(responseCode = "201", description = "Voto registrado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Requisição inválida"),
         @ApiResponse(responseCode = "404", description = "Pauta não encontrada"),
-        @ApiResponse(responseCode = "412", description = "Sessão de votação da pauta não está aberta")
+        @ApiResponse(responseCode = "412", description = "Sessão de votação da pauta não está aberta"),
+        @ApiResponse(responseCode = "422", description = "Sessão de votação da pauta já foi encerrada"),
+        @ApiResponse(responseCode = "422", description = "Voto nessa pauta já foi realizado")
     })
     void postVoto(
         @Parameter(name = "ID da Pauta", example = "1") Long id,

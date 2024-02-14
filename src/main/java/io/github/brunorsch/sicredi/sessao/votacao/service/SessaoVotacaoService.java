@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class SessaoVotacaoService {
-    private final AssociadoService associadoService;
+    private final CrudAssociadoService crudAssociadoService;
     private final Clock clock;
     private final PautaRepository pautaRepository;
     private final VotoRepository votoRepository;
@@ -72,7 +72,7 @@ public class SessaoVotacaoService {
         validarEstadoSessao(pauta);
         validarVotoJaRealizado(idPauta, request.getIdAssociado());
 
-        final var associado = associadoService.buscar(request.getIdAssociado());
+        final var associado = crudAssociadoService.buscar(request.getIdAssociado());
 
         Voto voto = new Voto();
         voto.setAssociado(associado);
@@ -95,7 +95,7 @@ public class SessaoVotacaoService {
         }
     }
 
-    private void validarVotoJaRealizado(Long idPauta, Long idAssociado) {
+    private void validarVotoJaRealizado(final Long idPauta, final Long idAssociado) {
         if(votoRepository.existsByAssociadoIdAndPautaId(idAssociado, idPauta)) {
             log.warn("Associado já votou nesta pauta");
             throw new VotoJaRealizadoException();

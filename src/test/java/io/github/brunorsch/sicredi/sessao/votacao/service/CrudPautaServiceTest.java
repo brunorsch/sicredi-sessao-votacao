@@ -3,10 +3,11 @@ package io.github.brunorsch.sicredi.sessao.votacao.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.github.brunorsch.sicredi.sessao.votacao.api.v1.dto.request.CriarPautaRequest;
@@ -18,18 +19,14 @@ import io.github.brunorsch.sicredi.sessao.votacao.testutils.Random;
 
 @ExtendWith(MockitoExtension.class)
 class CrudPautaServiceTest {
+    @InjectMocks
     private CrudPautaService service;
 
     @Mock(stubOnly = true)
     private PautaRepository repository;
 
-    private PautaMapper mapper;
-
-    @BeforeEach
-    void setUp() {
-        mapper = new PautaMapperImpl();
-        service = new CrudPautaService(mapper, repository);
-    }
+    @Spy
+    private PautaMapper mapper = new PautaMapperImpl();
 
     @Test
     void criarDeveSalvarNovaPautaCorretamente() {

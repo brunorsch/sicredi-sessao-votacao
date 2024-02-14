@@ -1,9 +1,9 @@
 package io.github.brunorsch.sicredi.sessao.votacao.exception;
 
-import io.github.brunorsch.sicredi.sessao.votacao.support.CodigoErro;
+import static io.github.brunorsch.sicredi.sessao.votacao.support.CodigoErro.ASSOCIADO_NAO_ENCONTRADO;
 
 public class AssociadoNaoEncontradoException extends RegraVioladaException {
     public AssociadoNaoEncontradoException() {
-        super(CodigoErro.ASSOCIADO_NAO_ENCONTRADO);
+        super(ASSOCIADO_NAO_ENCONTRADO);
     }
 }

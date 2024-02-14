@@ -154,7 +154,7 @@ class PautaControllerTest {
 
     @Test
     void postVotacaoDeveRetornarBadRequestQuandoBodyVazio() throws Exception {
-        this.mockMvc.perform(post("/v1/pautas/{id}/votacao", nextLong()))
+        this.mockMvc.perform(post("/v1/pautas/{id}/sessao-votacao", nextLong()))
             .andExpect(status().isBadRequest());
     }
 
@@ -163,7 +163,7 @@ class PautaControllerTest {
         var idPauta = nextLong();
         var request = Random.obj(AbrirSessaoRequest.class);
 
-        this.mockMvc.perform(post("/v1/pautas/{id}/votacao", idPauta)
+        this.mockMvc.perform(post("/v1/pautas/{id}/sessao-votacao", idPauta)
                 .contentType(APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request)))
             .andExpect(status().isCreated());
