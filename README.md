@@ -24,6 +24,20 @@ docker-compose up -d
 Uma imagem Docker da versão mais recente da aplicação foi disponibilizada no Docker Hub,
 para evitar a necessidade de build manual.
 
+## Serviço de validação de permissão por CPF
+O serviço de validação do CPF, parte da tarefa bonus 1, estava retornando
+`UNABLE_TO_VOTE` para todos os CPFs que testei (Até mesmo o CPF de exemplo
+da print da especificação que retornava `ABLE_TO_VOTE`). Acreditei que 
+seria um bug, mas para evitar que isso atrapalhasse os testes da aplicação, 
+criei uma feature flag para poder controlar dinâmicamente esse comportamento.
+
+Ela está desativada por padrão, mas pode ser ativada setando a variável
+de ambiente `WHITELIST_ATIVADO=true` no container da aplicação, pelo
+arquivo `docker-compose.yml`. A validação ocorre no fluxo de cadastro
+de associados.
+
+```yaml
+
 ## Escolhas de design
 ### Versionamento de APIs
 A estratégia de versionamento de APIs adotada foi a de versionamento por URL,

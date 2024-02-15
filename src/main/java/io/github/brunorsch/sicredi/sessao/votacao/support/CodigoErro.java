@@ -1,6 +1,7 @@
 package io.github.brunorsch.sicredi.sessao.votacao.support;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.PRECONDITION_FAILED;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
@@ -16,6 +17,7 @@ public enum CodigoErro {
     APURACAO_JA_REALIZADA(UNPROCESSABLE_ENTITY, "erros.processar-votos.apuracao-ja-realizada"),
     ASSOCIADO_JA_CADASTRADO(UNPROCESSABLE_ENTITY, "erros.cadastrar-associado.associado-ja-cadastrado"),
     ASSOCIADO_NAO_ENCONTRADO(UNPROCESSABLE_ENTITY, "erros.associado-nao-encontrado"),
+    ASSOCIADO_NAO_ESTA_APTO(FORBIDDEN, "erros.cadastrar-associado.associado-nao-esta-apto"),
     DATA_HORA_DEVE_SER_FUTURO(BAD_REQUEST, "erros.data-hora-deve-ser-futuro"),
     PAUTA_JA_POSSUI_SESSAO(UNPROCESSABLE_ENTITY, "erros.abrir-sessao.pauta-ja-possui-sessao"),
     PAUTA_NAO_ENCONTRADA(NOT_FOUND, "erros.pauta-nao-encontrada"),
