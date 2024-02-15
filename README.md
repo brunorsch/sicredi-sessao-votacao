@@ -36,8 +36,6 @@ de ambiente `WHITELIST_ATIVADO=true` no container da aplicação, pelo
 arquivo `docker-compose.yml`. A validação ocorre no fluxo de cadastro
 de associados.
 
-```yaml
-
 ## Escolhas de design
 ### Versionamento de APIs
 A estratégia de versionamento de APIs adotada foi a de versionamento por URL,
