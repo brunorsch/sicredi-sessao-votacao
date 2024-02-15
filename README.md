@@ -23,6 +23,8 @@ docker-compose up -d
 
 Uma imagem Docker da versão mais recente da aplicação foi disponibilizada no Docker Hub,
 para evitar a necessidade de build manual.
+> 💡 Uma instância de Kafdrop foi incluída no `docker-compose.yml` para facilitar a visualização
+> dos tópicos e mensagens do Kafka. Acesse em: [http://localhost:9000](http://localhost:9000).
 
 ## Serviço de validação de permissão por CPF
 O serviço de validação do CPF, parte da tarefa bonus 1, estava retornando
